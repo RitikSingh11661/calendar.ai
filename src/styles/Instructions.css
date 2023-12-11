@@ -1,0 +1,41 @@
+#instructions {
+  background-color: #f4f4f4;
+  padding-top: 10vh;
+}
+
+.instructions__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.instructions__title {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.instructions__list {
+  list-style: decimal;
+  font-size: 1.2rem;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.instructions__item {
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+@media screen and (max-width: 600px) {
+  .instructions__title {
+    font-size: 2.5rem;
+  }
+  
+
+  .instructions__item {
+    font-size: 1.1rem;
+  }
+}

@@ -1,0 +1,164 @@
+#contact {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #F5F5F5;
+  min-height: calc(100vh - 64px);
+  padding-top: 10vh;
+}
+
+#contact h1 {
+  font-size: 50px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0;
+  color: #FF6347;
+}
+
+#intro-line {
+  font-size: 24px;
+  text-align: center;
+  margin: 20px 0;
+  color: #007FFF;
+}
+
+#contact-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+#contact-icons a {
+  display: inline-block;
+  font-size: 30px;
+  color: #333;
+  margin: 0 20px;
+  transition: all 0.3s ease;
+}
+
+#contact-icons a:hover {
+  color: #FF6347;
+}
+
+#contact-details>p {
+  font-size: 18px;
+  text-align: center;
+  margin: 10px 0;
+}
+
+
+#bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Mobile devices */
+@media only screen and (max-width: 767px) {
+  #contact {
+    min-height: auto;
+  }
+
+  #contact h1 {
+    font-size: 36px;
+    line-height: 1.2;
+  }
+
+  #intro-line {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+
+  #contact-icons {
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  #contact-icons a {
+    font-size: 24px;
+    margin: 10px 15px;
+  }
+
+  #bottom {
+    position: static;
+    padding: 20px;
+    font-size: 12px;
+  }
+}
+
+/* Tablets and small desktops */
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+  #contact {
+    min-height: auto;
+  }
+
+  #contact h1 {
+    font-size: 42px;
+    line-height: 1.2;
+  }
+
+  #intro-line {
+    font-size: 20px;
+    margin: 20px 0;
+  }
+
+  #contact-email,
+  #contact-phone {
+    font-size: 16px;
+  }
+
+  #contact-icons a {
+    font-size: 28px;
+    margin: 0 25px;
+  }
+
+  #bottom {
+    position: static;
+    padding: 20px;
+    font-size: 14px;
+  }
+}
+
+/* Large desktops */
+@media only screen and (min-width: 1024px) {
+  #contact {
+    min-height: calc(100vh - 64px);
+  }
+
+  #contact h1 {
+    font-size: 50px;
+    line-height: 1.2;
+  }
+
+  #intro-line {
+    font-size: 24px;
+    margin: 20px 0;
+  }
+
+  #contact-email,
+  #contact-phone {
+    font-size: 18px;
+  }
+
+  #contact-icons a {
+    font-size: 30px;
+    margin: 0 20px;
+  }
+
+  #bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    font-size: 14px;
+  }
+}

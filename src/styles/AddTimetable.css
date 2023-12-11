@@ -1,0 +1,57 @@
+.add-timetable-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.table-container {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.timetable-table {
+  width: 100%;
+  margin-bottom: 1rem;
+  border-collapse: collapse;
+}
+
+.timetable-table th,
+.timetable-table td {
+  padding: 0.5rem;
+  border: 1px solid #000;
+}
+
+.remove-button {
+  background-color: #ff0000;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  margin-top: 1rem;
+}
+
+.buttons-container button {
+  margin-right: 0.5rem;
+}
+
+.add-button {
+  background-color: #008000;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.submit-button {
+  background-color: #0000ff;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
