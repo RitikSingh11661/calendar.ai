@@ -5,7 +5,7 @@ import { addEvents } from "../redux/App/action.js";
 import { useDispatch } from "react-redux";
 import { FaCheck } from "react-icons/fa";
 import '../styles/DetectTextStyle.css';
-import { useToast } from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 import jwtDecode from "jwt-decode";
 import { AddTimetable } from "./AddTimetable.jsx";
 
@@ -13,6 +13,7 @@ export const DetectText = () => {
   const [file, setFile] = useState({});
   const [isFileSelected, setIsFileSelected] = useState(false);
   const [isOcrClicked, setIsOcrClicked] = useState(false);
+  const [isOcrLoading, setIsOcrLoading] = useState(false);
   const [isPrivate, setIsPrivate] = useState(true)
   const [userId, setUserId] = useState('');
   const bucketName = process.env.REACT_APP_SECRET_BUCKET_NAME;
@@ -36,7 +37,6 @@ export const DetectText = () => {
   }
 
   const onPaste = (event) => {
-    console.log('hii')
     const items = event.clipboardData.items;
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
@@ -91,6 +91,7 @@ export const DetectText = () => {
       alert('Please choose a file & upload it first');
       return;
     }
+    setIsOcrLoading(prev => !prev);
     const fileExtension = file.name.split('.').pop();
     let filename;
     if (isPrivate) filename = `${file.name.split('.').slice(0, -1).join('.')}.${fileExtension}-${uuidv4()}`;
@@ -105,7 +106,7 @@ export const DetectText = () => {
       //   console.log('err',error);
       // }
       if (err) console.log('error', err);
-      else console.log('success', data);
+      else console.log('success', data)
     });
 
     const lambda = new AWS.Lambda(credential);
@@ -124,10 +125,13 @@ export const DetectText = () => {
           const firstTableData = res.body.table[tableId];
           dispatch(addEvents(firstTableData))
           ocrSuccessToast()
-          setIsOcrClicked(prev => !prev)
+          setIsOcrLoading(prev => !prev);
+          setIsOcrClicked(prev => !prev);
         }
       } else if (err) {
         ocrFailureToast(err);
+        setIsOcrLoading(prev => !prev);
+        setIsOcrClicked(prev => !prev);
       };
     });
   };
@@ -137,7 +141,7 @@ export const DetectText = () => {
     const decodedId = jwtDecode(token).userId;
     setUserId(decodedId)
     document.addEventListener('paste', onPaste);
-    return () => {document.removeEventListener('paste', onPaste)};
+    return () => { document.removeEventListener('paste', onPaste) };
   }, [])
 
   return (
@@ -145,7 +149,7 @@ export const DetectText = () => {
       <div id="file-uploader-container">
         <input type="file" id="file" name="file" onChange={onSelectFile} className="inputfile" />
         <label htmlFor="file" style={{ backgroundColor: isFileSelected ? "rgb(181 63 181)" : "" }} className="file-label">Choose a file</label>
-        <button onClick={detectText} className="ocr-button">Run OCR</button>
+        <Button isDisabled={isOcrLoading} onClick={detectText} bg={'#4caf50'} color={'#fff'} borderRadius={'5px'} padding={'10px 20px'} transition={'background-color 0.2s'} _hover={{ bg: '#388e3c' }} className="ocr-button" >Run OCR</Button>
         <FaCheck color={isOcrClicked ? "#4caf50" : "grey"} size={26} />
         <div className="private-toggle">
           <input type="checkbox" id="private-checkbox" checked={isPrivate} onChange={() => setIsPrivate(!isPrivate)} />

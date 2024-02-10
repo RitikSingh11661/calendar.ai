@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import '../styles/GoogleCalendarEventsStyle.css'
 import { useDispatch, useSelector } from 'react-redux';
 import { AddGoogleCalenderThing } from './AddGoogleThing';
-import { FormControl, FormLabel, IconButton, Input, Select, useToast } from '@chakra-ui/react';
+import { Box, FormControl, FormLabel, IconButton, Input, Select, useToast } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import { Loading } from './Loading';
 import { getData, resetEvents } from '../redux/App/action';
@@ -15,8 +15,30 @@ export const GoogleCalendarEvents = () => {
   const [location, setLocation] = useState('');
   const [attendees, setAttendees] = useState(['']);
   const [guestsCanSeeOtherGuests, setGuestsCanSeeOtherGuests] = useState(false);
+  const [createHangout, setCreateHangout] = useState(false);
   const toast = useToast();
   const dispatch = useDispatch();
+
+  // function to generate google meet link in events
+  function generateMeetingLink() {
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789', sections = 3, charsPerSection = 4;
+    let link = '';
+
+    for (let i = 0; i < sections; i++) {
+      let section = '';
+      for (let j = 0; j < charsPerSection; j++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        section += characters[randomIndex];
+      }
+      link += section;
+      if (i < sections - 1) link += '-';
+    }
+
+    // Append timestamp to the link
+    const timestamp = Date.now().toString().substr(-6); // Taking last 6 digits of the timestamp
+    link += '-' + timestamp;
+    return link;
+  }
 
   let eventsSuccessToast = () => {
     return toast({
@@ -50,7 +72,7 @@ export const GoogleCalendarEvents = () => {
     // ]; 
     // console.log('events', events);
     if (events?.length > 0) {
-      setIsLoading(prev=>!prev);
+      setIsLoading(prev => !prev);
       let userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       let finalEvents = [], header = {}, unwanted = [], time, eventsList = [], isDay = events[0].some((element) => /day/i.test(element));
       for (let i = 0; i < events.length; i++) {
@@ -125,6 +147,12 @@ export const GoogleCalendarEvents = () => {
               'description': desription,
               'start': { 'dateTime': startTime, 'timeZone': userTimeZone },
               'end': { 'dateTime': endTime, 'timeZone': userTimeZone },
+              'conferenceData': {
+                'createRequest': {
+                  'requestId': generateMeetingLink(),
+                  'conferenceSoltionKey': { 'type': 'hangoutsMeet' }
+                },
+              },
               'recurrence': ['RRULE:FREQ=DAILY;COUNT=1'],
               'reminders': { 'useDefault': true },
               'attendees': attendees.map((el) => {
@@ -132,6 +160,7 @@ export const GoogleCalendarEvents = () => {
               }),
               "guestsCanSeeOtherGuests": guestsCanSeeOtherGuests,
             }
+            console.log('singleEvent', singleEvent)
             finalEvents.push(singleEvent)
           }
         }
@@ -139,7 +168,7 @@ export const GoogleCalendarEvents = () => {
       try {
         var batch = gapi.client.newBatch();
         finalEvents.forEach((event) => {
-          batch.add(gapi.client.calendar.events.insert({ 'calendarId': 'primary', 'resource': event, 'sendUpdates': 'all' }));
+          batch.add(gapi.client.calendar.events.insert({ 'calendarId': 'primary', 'resource': event, 'sendUpdates': 'all', conferenceDataVersion: createHangout?1:0}));
         })
         batch.execute((res) => {
           dispatch(resetEvents);
@@ -151,7 +180,7 @@ export const GoogleCalendarEvents = () => {
         dispatch(resetEvents);
         eventsFailureToast(error)
       }
-      setIsLoading(prev=>!prev);
+      setIsLoading(prev => !prev);
     }
     else {
       alert('Events are empty, Kindly add some events ')
@@ -201,7 +230,8 @@ export const GoogleCalendarEvents = () => {
           <FormLabel>Location</FormLabel>
           <Input type='text' name='location' background='#fff' htmlSize={45} width='auto' onChange={(e) => setLocation(e.target.value)} value={location} />
         </FormControl>
-        <FormLabel>Attendees Email Id's</FormLabel>
+        <Box display={'contents'}>
+        <FormLabel textAlign={'center'} marginTop={'15px'}>Attendees Email Id's</FormLabel>
         {attendees.map((email, index) => (
           <FormControl key={index} id={`attendee-email-${index}`}>
             <FormLabel>Email Id {index + 1}</FormLabel>
@@ -209,10 +239,18 @@ export const GoogleCalendarEvents = () => {
             {index > 0 && (<IconButton icon={<DeleteIcon />} onClick={() => handleRemoveAttendee(index)} />)}
           </FormControl>
         ))}
+        </Box>
         <IconButton aria-label='Add' margin='3px 0' icon={<AddIcon />} onClick={() => setAttendees(prev => [...prev, ''])} />
         <FormControl>
           <FormLabel>Guests can see other guests</FormLabel>
           <Select value={guestsCanSeeOtherGuests} onChange={(e) => setGuestsCanSeeOtherGuests(e.target.value)}>
+            <option value={true}>Yes</option>
+            <option value={false}>No</option>
+          </Select>
+        </FormControl>
+        <FormControl marginTop={'15px'}>
+          <FormLabel>Create google hangout meet</FormLabel>
+          <Select value={createHangout} onChange={(e) => setCreateHangout(e.target.value)}>
             <option value={true}>Yes</option>
             <option value={false}>No</option>
           </Select>
