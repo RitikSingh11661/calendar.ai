@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import AWS from 'aws-sdk'
+import AWS from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
 import { addEvents } from "../redux/App/action.js";
 import { useDispatch } from "react-redux";
 import { FaCheck } from "react-icons/fa";
 import '../styles/DetectTextStyle.css';
-import { Button, useToast } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import jwtDecode from "jwt-decode";
 import { AddTimetable } from "./AddTimetable.jsx";
 
@@ -13,7 +13,6 @@ export const DetectText = () => {
   const [file, setFile] = useState({});
   const [isFileSelected, setIsFileSelected] = useState(false);
   const [isOcrClicked, setIsOcrClicked] = useState(false);
-  const [isOcrLoading, setIsOcrLoading] = useState(false);
   const [isPrivate, setIsPrivate] = useState(true)
   const [userId, setUserId] = useState('');
   const bucketName = process.env.REACT_APP_SECRET_BUCKET_NAME;
@@ -21,39 +20,41 @@ export const DetectText = () => {
   const dispatch = useDispatch();
 
   const onSelectFile = (e) => {
-    setIsFileSelected(false);
-    setIsOcrClicked(false);
-    if (!e.target.files || e.target.files.length === 0) return;
-    const reader = new FileReader();
-    const file = e.target.files[0];
-    const fileType = file.type.split('/')[1];
-    if (fileType !== 'jpeg' && fileType !== 'png' && fileType !== 'pdf') {
-      alert('Please choose a valid image or PDF file');
-      return;
-    }
-    setFile(file);
-    setIsFileSelected(true);
-    reader.readAsDataURL(file);
+    ocrDenyingToast();
+    // setIsFileSelected(false);
+    // setIsOcrClicked(false);
+    // if (!e.target.files || e.target.files.length === 0) return;
+    // const reader = new FileReader();
+    // const file = e.target.files[0];
+    // const fileType = file.type.split('/')[1];
+    // if (fileType !== 'jpeg' && fileType !== 'png' && fileType !== 'pdf') {
+    //   alert('Please choose a valid image or PDF file');
+    //   return;
+    // }
+    // setFile(file);
+    // setIsFileSelected(true);
+    // reader.readAsDataURL(file);
   }
 
   const onPaste = (event) => {
-    const items = event.clipboardData.items;
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      if (item.type.indexOf('image') !== -1 || item.type === 'application/pdf') {
-        const blob = item.getAsFile();
-        const reader = new FileReader();
-        reader.onload = () => {
-          const file = new File([blob], 'pasted-file', { type: blob.type });
-          setFile(file);
-          setIsFileSelected(true);
-        };
-        reader.readAsDataURL(blob);
-      } else {
-        alert('Please choose a valid image or PDF file');
-        return;
-      }
-    }
+    ocrDenyingToast();
+    // const items = event.clipboardData.items;
+    // for (let i = 0; i < items.length; i++) {
+    //   const item = items[i];
+    //   if (item.type.indexOf('image') !== -1 || item.type === 'application/pdf') {
+    //     const blob = item.getAsFile();
+    //     const reader = new FileReader();
+    //     reader.onload = () => {
+    //       const file = new File([blob], 'pasted-file', { type: blob.type });
+    //       setFile(file);
+    //       setIsFileSelected(true);
+    //     };
+    //     reader.readAsDataURL(blob);
+    //   } else {
+    //     alert('Please choose a valid image or PDF file');
+    //     return;
+    //   }
+    // }
   };
 
   const credential = {
@@ -63,6 +64,17 @@ export const DetectText = () => {
   }
 
   const s3 = new AWS.S3(credential);
+
+  let ocrDenyingToast = () => {
+    return toast({
+      title: "Aws charge for this service",
+      description: "You can contact developer for demo",
+      status: "error",
+      duration: 5000,
+      position: "top",
+      isClosable: true,
+    });
+  }
 
   let ocrSuccessToast = () => {
     return toast({
@@ -91,7 +103,6 @@ export const DetectText = () => {
       alert('Please choose a file & upload it first');
       return;
     }
-    setIsOcrLoading(prev => !prev);
     const fileExtension = file.name.split('.').pop();
     let filename;
     if (isPrivate) filename = `${file.name.split('.').slice(0, -1).join('.')}.${fileExtension}-${uuidv4()}`;
@@ -106,7 +117,7 @@ export const DetectText = () => {
       //   console.log('err',error);
       // }
       if (err) console.log('error', err);
-      else console.log('success', data)
+      else console.log('success', data);
     });
 
     const lambda = new AWS.Lambda(credential);
@@ -125,13 +136,10 @@ export const DetectText = () => {
           const firstTableData = res.body.table[tableId];
           dispatch(addEvents(firstTableData))
           ocrSuccessToast()
-          setIsOcrLoading(prev => !prev);
-          setIsOcrClicked(prev => !prev);
+          setIsOcrClicked(prev => !prev)
         }
       } else if (err) {
         ocrFailureToast(err);
-        setIsOcrLoading(prev => !prev);
-        setIsOcrClicked(prev => !prev);
       };
     });
   };
@@ -141,7 +149,7 @@ export const DetectText = () => {
     const decodedId = jwtDecode(token).userId;
     setUserId(decodedId)
     document.addEventListener('paste', onPaste);
-    return () => { document.removeEventListener('paste', onPaste) };
+    return () => {document.removeEventListener('paste', onPaste)};
   }, [])
 
   return (
@@ -149,7 +157,7 @@ export const DetectText = () => {
       <div id="file-uploader-container">
         <input type="file" id="file" name="file" onChange={onSelectFile} className="inputfile" />
         <label htmlFor="file" style={{ backgroundColor: isFileSelected ? "rgb(181 63 181)" : "" }} className="file-label">Choose a file</label>
-        <Button isDisabled={isOcrLoading} onClick={detectText} bg={'#4caf50'} color={'#fff'} borderRadius={'5px'} padding={'10px 20px'} transition={'background-color 0.2s'} _hover={{ bg: '#388e3c' }} className="ocr-button" >Run OCR</Button>
+        <button onClick={detectText} className="ocr-button">Run OCR</button>
         <FaCheck color={isOcrClicked ? "#4caf50" : "grey"} size={26} />
         <div className="private-toggle">
           <input type="checkbox" id="private-checkbox" checked={isPrivate} onChange={() => setIsPrivate(!isPrivate)} />
