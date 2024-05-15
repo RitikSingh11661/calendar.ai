@@ -1,0 +1,164 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  top: 0;
+  position: fixed;
+  width: 100%;
+  z-index: 20;
+  justify-content: space-between;
+  background-color: rgb(241, 237, 233);
+  margin-bottom: 2vh;
+}
+
+.nav-logo {
+  margin-left: 5vw;
+}
+
+nav {
+  display: flex;
+  width: 60%;
+  justify-content: space-evenly;
+  margin-right: 1vw;
+}
+
+nav a {
+  text-decoration: none;
+  color: black;
+  margin: 10px 1vw;
+  font-size: 20px;
+}
+
+.nav-link_signout {
+  color: black;
+}
+
+.changer {
+  display: none;
+}
+
+.menu-button {
+  display: block;
+  padding: 10px;
+  margin-right: 20px;
+  visibility: hidden;
+}
+
+.menu {
+  font-size: 30px;
+}
+
+.nav-open {
+  display: flex;
+}
+
+.nav-link_about:hover {
+  background-color: #ffa500;
+  color: white;
+}
+
+.nav-link_instructions:hover {
+  background-color: #800080;
+  color: white;
+}
+
+.nav-link_home:hover {
+  background-color: #008000;
+  color: white;
+}
+
+.nav-link_contact:hover {
+  background-color: #00bfff;
+  color: white;
+}
+
+.nav-link_login:hover {
+  background-color: #f44336;
+  color: white;
+}
+
+.nav-link_signout:hover {
+  background-color: #e73318;
+  color: white;
+}
+
+.nav-link_about_current {
+  background-color: #ffa500;
+  color: white;
+}
+
+.nav-link_instructions_current {
+  background-color: #800080;
+  color: white;
+}
+
+.nav-link_home_current {
+  background-color: #008000;
+  color: white;
+}
+
+.nav-link_contact_current {
+  background-color: #00bfff;
+  color: white;
+}
+
+@media (max-width: 381px) {
+  .nav-close {
+    display: none;
+  }
+
+  nav {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 40px;
+  }
+
+  .changer {
+    display: none;
+  }
+
+  .menu-button {
+    visibility: visible;
+  }
+
+  .menu {
+    font-size: 36px;
+  }
+
+  .nav-open > a {
+    margin: 8px 0;
+    font-size: 12px;
+  }
+}
+
+@media only screen and (min-width: 382px) and (max-width: 768px) {
+  .nav-close {
+    display: none;
+  }
+
+  nav {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 40px;
+  }
+
+  .changer {
+    display: none;
+  }
+
+  .menu-button {
+    visibility: visible;
+  }
+
+  .menu {
+    font-size: 36px;
+  }
+
+  nav a {
+    margin: 10px 0;
+    font-size: 24px;
+  }
+}
