@@ -20,41 +20,41 @@ export const DetectText = () => {
   const dispatch = useDispatch();
 
   const onSelectFile = (e) => {
-    // ocrDenyingToast();
-    setIsFileSelected(false);
-    setIsOcrClicked(false);
-    if (!e.target.files || e.target.files.length === 0) return;
-    const reader = new FileReader();
-    const file = e.target.files[0];
-    const fileType = file.type.split('/')[1];
-    if (fileType !== 'jpeg' && fileType !== 'png' && fileType !== 'pdf') {
-      alert('Please choose a valid image or PDF file');
-      return;
-    }
-    setFile(file);
-    setIsFileSelected(true);
-    reader.readAsDataURL(file);
+    ocrDenyingToast();
+    // setIsFileSelected(false);
+    // setIsOcrClicked(false);
+    // if (!e.target.files || e.target.files.length === 0) return;
+    // const reader = new FileReader();
+    // const file = e.target.files[0];
+    // const fileType = file.type.split('/')[1];
+    // if (fileType !== 'jpeg' && fileType !== 'png' && fileType !== 'pdf') {
+    //   alert('Please choose a valid image or PDF file');
+    //   return;
+    // }
+    // setFile(file);
+    // setIsFileSelected(true);
+    // reader.readAsDataURL(file);
   }
 
   const onPaste = (event) => {
-    // ocrDenyingToast();
-    const items = event.clipboardData.items;
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      if (item.type.indexOf('image') !== -1 || item.type === 'application/pdf') {
-        const blob = item.getAsFile();
-        const reader = new FileReader();
-        reader.onload = () => {
-          const file = new File([blob], 'pasted-file', { type: blob.type });
-          setFile(file);
-          setIsFileSelected(true);
-        };
-        reader.readAsDataURL(blob);
-      } else {
-        alert('Please choose a valid image or PDF file');
-        return;
-      }
-    }
+    ocrDenyingToast();
+    // const items = event.clipboardData.items;
+    // for (let i = 0; i < items.length; i++) {
+    //   const item = items[i];
+    //   if (item.type.indexOf('image') !== -1 || item.type === 'application/pdf') {
+    //     const blob = item.getAsFile();
+    //     const reader = new FileReader();
+    //     reader.onload = () => {
+    //       const file = new File([blob], 'pasted-file', { type: blob.type });
+    //       setFile(file);
+    //       setIsFileSelected(true);
+    //     };
+    //     reader.readAsDataURL(blob);
+    //   } else {
+    //     alert('Please choose a valid image or PDF file');
+    //     return;
+    //   }
+    // }
   };
 
   const credential = {
